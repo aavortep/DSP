@@ -2,6 +2,7 @@ from sampling import get_samples, get_gauss, get_rect
 from cmath import exp, pi
 import matplotlib.pyplot as plt
 from scipy.fft import fft
+import time
 
 
 def dft(signal):
@@ -25,12 +26,21 @@ if __name__ == '__main__':
     rect = get_rect(samples, tt)
 
     # ДПФ
+    start = time.perf_counter_ns()
     dft_gauss = dft(gauss)
+    end = time.perf_counter_ns()
+    dft_time = end - start
     dft_rect = dft(rect)
 
     # БПФ
+    start = time.perf_counter_ns()
     fft_gauss = fft(gauss)
+    end = time.perf_counter_ns()
+    fft_time = end - start
     fft_rect = fft(rect)
+
+    print("Время выполнения ДПФ: ", dft_time, " нс")
+    print("Время выполнения БПФ: ", fft_time, " нс")
 
     x = [i for i in range(len(samples))]
 
