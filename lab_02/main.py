@@ -1,7 +1,7 @@
 from sampling import get_samples, get_gauss, get_rect
 from cmath import exp, pi
 import matplotlib.pyplot as plt
-from scipy.fft import fft
+from scipy.fft import fft, fftshift
 import time
 
 
@@ -12,6 +12,9 @@ def dft(signal):
         for n in range(len(signal)):
             discreted[k] += signal[n] * exp(degree[k] * n)
     return discreted
+
+
+#def remove_twins(fft_signal, t0):
 
 
 if __name__ == '__main__':
@@ -39,6 +42,9 @@ if __name__ == '__main__':
     fft_time = end - start
     fft_rect = fft(rect)
 
+    shifted_gauss = fftshift(fft_gauss)
+    shifted_rect = fftshift(fft_rect)
+
     print("Время выполнения ДПФ: ", dft_time, " нс")
     print("Время выполнения БПФ: ", fft_time, " нс")
 
@@ -48,6 +54,8 @@ if __name__ == '__main__':
     graph_rect_dft = [abs(i) for i in dft_rect]
     graph_gauss_fft = [abs(i) for i in fft_gauss]
     graph_rect_fft = [abs(i) for i in fft_rect]
+    graph_shifted_gauss = [abs(i) for i in shifted_gauss]
+    graph_shifted_rect = [abs(i) for i in shifted_rect]
 
     plt.subplot(3, 1, 1)
     plt.title('Сигнал Гаусса. ДПФ')
@@ -77,6 +85,22 @@ if __name__ == '__main__':
     plt.xlabel('x')
     plt.ylabel('|V(x)|')
     plt.plot(x, graph_rect_fft)
+    plt.grid()
+
+    plt.show()
+
+    plt.subplot(3, 1, 1)
+    plt.title('Сигнал Гаусса без "близнецов"')
+    plt.xlabel('x')
+    plt.ylabel('|V(x)|')
+    plt.plot(x, graph_shifted_gauss)
+    plt.grid()
+
+    plt.subplot(3, 1, 3)
+    plt.title('Прямоугольный импульс без "близнецов"')
+    plt.xlabel('x')
+    plt.ylabel('|V(x)|')
+    plt.plot(x, graph_shifted_rect)
     plt.grid()
 
     plt.show()
